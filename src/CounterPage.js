@@ -1,5 +1,5 @@
 import { Wrapper, CounterText, Button, Label, Input } from "./Components";
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 
 const getInitialCounter = () =>
   new Promise((res) => {
@@ -51,28 +51,22 @@ export const CounterPage = () => {
     };
   }, [initialCounter]);
 
-  console.log("rerender")
+  console.log("rerender");
 
-  const decrement = useMemo(()=>{
-    console.log("creating decrement --- fn")
-    return ()=> {
-      setCounter((prevCount) => prevCount - 1);
-    }
-  },[setCounter])
+  const decrement = useCallback(() => {
+    setCounter((prevCount) => prevCount - 1);
+  }, [setCounter]);
 
-  const increment = useMemo(()=>{
-    console.log("creating increment +++ fn")
-    return ()=> {
-      setCounter((prevCount) => prevCount + 1);
-    }
-  },[setCounter])
+  const increment = useCallback(() => {
+    setCounter((prevCount) => prevCount + 1);
+  }, [setCounter]);
 
-  const handleChange = useMemo(()=>{
-    console.log("creating handleChange")
-    return (e) => {
-      setInitialCounter(e.target.value)
-    }
-  }, [setInitialCounter])
+  const handleChange = useCallback(
+    (e) => {
+      setInitialCounter(e.target.value);
+    },
+    [setInitialCounter]
+  );
 
   if (loading) {
     return <Wrapper>Loading...</Wrapper>;
@@ -82,25 +76,13 @@ export const CounterPage = () => {
     <Wrapper>
       <CounterText>{counter}</CounterText>
       <div>
-        <Button
-          onClick={decrement}
-        >
-          -1
-        </Button>{" "}
-        <Button
-          onClick={increment}
-        >
-          +1
-        </Button>
+        <Button onClick={decrement}>-1</Button>{" "}
+        <Button onClick={increment}>+1</Button>
       </div>
 
       <Label>
         <span>Initial Counter</span>
-        <Input
-          ref={inputEl}
-          value={initialCounter}
-          onChange={handleChange}
-        />
+        <Input ref={inputEl} value={initialCounter} onChange={handleChange} />
       </Label>
     </Wrapper>
   );
