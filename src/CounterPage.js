@@ -3,6 +3,13 @@ import { useState, useEffect } from "react";
 
 export const CounterPage = () => {
   const [counter, setCounter] = useState(10);
+
+  useEffect(() => {
+    setInterval(() => {
+      setCounter((prevCount) => (prevCount > 0 ? prevCount - 1 : prevCount));
+    }, 1000);
+  }, []);
+
   return (
     <Wrapper>
       <CounterText>{counter}</CounterText>
