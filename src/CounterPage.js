@@ -1,5 +1,5 @@
 import { Wrapper, CounterText, Button, Label, Input } from "./Components";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 
 const getInitialCounter = () =>
   new Promise((res) => {
@@ -51,6 +51,29 @@ export const CounterPage = () => {
     };
   }, [initialCounter]);
 
+  console.log("rerender")
+
+  const decrement = useMemo(()=>{
+    console.log("creating decrement --- fn")
+    return ()=> {
+      setCounter((prevCount) => prevCount - 1);
+    }
+  },[setCounter])
+
+  const increment = useMemo(()=>{
+    console.log("creating increment +++ fn")
+    return ()=> {
+      setCounter((prevCount) => prevCount + 1);
+    }
+  },[setCounter])
+
+  const handleChange = useMemo(()=>{
+    console.log("creating handleChange")
+    return (e) => {
+      setInitialCounter(e.target.value)
+    }
+  }, [setInitialCounter])
+
   if (loading) {
     return <Wrapper>Loading...</Wrapper>;
   }
@@ -60,16 +83,12 @@ export const CounterPage = () => {
       <CounterText>{counter}</CounterText>
       <div>
         <Button
-          onClick={() => {
-            setCounter((prevCount) => prevCount - 1);
-          }}
+          onClick={decrement}
         >
           -1
         </Button>{" "}
         <Button
-          onClick={() => {
-            setCounter((prevCount) => prevCount + 1);
-          }}
+          onClick={increment}
         >
           +1
         </Button>
@@ -80,7 +99,7 @@ export const CounterPage = () => {
         <Input
           ref={inputEl}
           value={initialCounter}
-          onChange={(e) => setInitialCounter(e.target.value)}
+          onChange={handleChange}
         />
       </Label>
     </Wrapper>
