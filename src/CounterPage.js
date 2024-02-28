@@ -12,27 +12,30 @@ export const CounterPage = () => {
   const [initialCounter, setInitialCounter] = useState(0);
   const [counter, setCounter] = useState(0);
   const [loading, setLoading] = useState(false);
+
   const inputEl = useRef(null);
 
+  // fetch api via .then
   useEffect(() => {
     setLoading(true);
     getInitialCounter().then((initialCounter) => {
       setLoading(false);
       setInitialCounter(initialCounter);
-      
+
       // inputEl.current.focus();
     });
   }, []);
 
+  // focus input by using useRef
   useEffect(() => {
     if (!loading) {
       inputEl.current.focus();
     }
   }, [loading]);
 
+  // set counter (main)
   useEffect(() => {
     let id;
-
     setCounter(initialCounter);
     id = setInterval(() => {
       console.log("countdown", initialCounter);
@@ -40,6 +43,7 @@ export const CounterPage = () => {
       setCounter((prevCount) => (prevCount > 0 ? prevCount - 1 : prevCount));
     }, 1000);
 
+    // clear effect
     return () => {
       if (id) {
         clearInterval(id);
