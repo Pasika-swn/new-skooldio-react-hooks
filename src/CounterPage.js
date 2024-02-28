@@ -4,31 +4,44 @@ import { useState, useEffect } from "react";
 const getInitialCounter = () =>
   new Promise((res) => {
     setTimeout(() => {
-      res(10);
+      res(100);
     }, 1000);
   });
 
 export const CounterPage = () => {
-  const [initialCounter, setInitialCounter] = useState(10);
+  const [initialCounter, setInitialCounter] = useState(0);
   const [counter, setCounter] = useState(0);
+  const [loading, setLoading] = useState(false)
+
+  useEffect(()=>{
+    setLoading(true)
+    getInitialCounter().then((initialCounter)=>{
+      setLoading(false)
+      setInitialCounter(initialCounter)
+    })
+  }, [])
 
   useEffect(() => {
     let id;
-    getInitialCounter().then((initialCounter) => {
+    
       setCounter(initialCounter);
       id = setInterval(() => {
         console.log("countdown", initialCounter);
         // console.log("id", id)
         setCounter((prevCount) => (prevCount > 0 ? prevCount - 1 : prevCount));
       }, 1000);
-    });
+    
 
     return () => {
       if (id) {
         clearInterval(id);
       }
     };
-  }, []);
+  }, [initialCounter]);
+
+  if(loading){
+    return <Wrapper>Loading...</Wrapper>
+  }
 
   return (
     <Wrapper>
